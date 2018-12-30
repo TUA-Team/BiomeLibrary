@@ -26,8 +26,7 @@ namespace BiomeLibrary
 
         public override void Load(TagCompound tag)
         {
-            BiomeLibs.world = mod.GetModWorld<BiomeWorld>();
-            resetList();
+            BiomeLibs.World = mod.GetModWorld<BiomeWorld>();
             base.Load(tag);
         }
 
@@ -41,10 +40,6 @@ namespace BiomeLibrary
         }
 
 
-        public void resetList() {
-            BiomeLibs.reset();
-        }
-
         [Obsolete("Now integrated into ModBiome", true)]
         internal void addBlock(String biomeName, String[] block)
         {
@@ -57,14 +52,14 @@ namespace BiomeLibrary
 
         public override void TileCountsAvailable(int[] tileCounts)
         {
-            for (int i = 0; i < BiomeLibs.biomes.Count; i++)
-                BiomeLibs.biomes.Values.ToList()[i].tileCount(tileCounts);
+            for (int i = 0; i < BiomeLibs.Biomes.Count; i++)
+                BiomeLibs.Biomes.Values.ToList()[i].tileCount(tileCounts);
         }
 
         public override void ResetNearbyTileEffects()
         {
-            for (int i = 0; i < BiomeLibs.biomes.Count; i++)
-                BiomeLibs.biomes.Values.ToList()[i].TileCount = 0;
+            for (int i = 0; i < BiomeLibs.Biomes.Count; i++)
+                BiomeLibs.Biomes.Values.ToList()[i].resetTileCount();
         }
 
         public override void ModifyHardmodeTasks(List<GenPass> list)
@@ -122,8 +117,8 @@ namespace BiomeLibrary
                     {
 
                         biome =
-                            BiomeLibs.biomes.Values.ToList()[
-                                Main.rand.Next(BiomeLibs.biomes.Values.ToList().Count)];
+                            BiomeLibs.Biomes.Values.ToList()[
+                                Main.rand.Next(BiomeLibs.Biomes.Values.ToList().Count)];
                         if (biome.IsHallowAlt)
                         {
                             break;

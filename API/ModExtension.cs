@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.ModLoader;
+using Terraria.World.Generation;
 
 namespace BiomeLibrary.API
 {
@@ -11,12 +14,24 @@ namespace BiomeLibrary.API
     {
         public static ModBiome GetBiome(this Mod self, string biomeName)
         {
-            return BiomeLibs.biomes.ContainsKey(self.Name + ":" + biomeName) ? BiomeLibs.biomes[self.Name + ":" + biomeName] : null;
+            return BiomeLibs.Biomes.ContainsKey(self.Name + ":" + biomeName) ? BiomeLibs.Biomes[self.Name + ":" + biomeName] : null;
         }
 
         public static ModBiome GetBiome<T>(this Mod self)
         {
             return self.GetBiome(typeof(T).Name);
+        }
+
+        internal static void AutoloadBiome(this Mod mod, Type type)
+        {
+            ModBiome biome = (ModBiome)Activator.CreateInstance(type);
+            biome.mod = mod;
+            biome.BiomeName = type.Name;
+            biome.SetDefault();
+
+            BiomeLibs.Biomes.Add(mod.Name + ":" + type.Name, biome);
+            ErrorLogger.Log(mod.Name + ":" + type.Name);
+
         }
 
         public static int BiomeType(this Mod self, string biomeName) => self.GetBiome(biomeName).RuntimeID;

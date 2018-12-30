@@ -15,25 +15,19 @@ namespace BiomeLibrary
         public override void Load(TagCompound tag)
         {
             
-            BiomeLibs.player = Main.LocalPlayer.GetModPlayer<BiomePlayer>();
-        }
-
-        [Obsolete("Now use ModBiome.InBiome()", false)]
-        public bool Inbiome(string biomeName)
-        {
-            return false;
-        }
+            BiomeLibs.Player = Main.LocalPlayer.GetModPlayer<BiomePlayer>();
+        }  
 
         public override void SendCustomBiomes(BinaryWriter writer)
         {
-            for (var i = 0; i < BiomeLibs.biomes.Count; i++)
-                BiomeLibs.biomes.Values.ToList()[i].SendCustomBiomes(writer);
+            /*for (var i = 0; i < BiomeLibs.biomes.Count; i++)
+                BiomeLibs.biomes.Values.ToList()[i].SendCustomBiomes(writer);*/
         }
 
         public override void ReceiveCustomBiomes(BinaryReader reader)
         {
-            for (var i = 0; i < BiomeLibs.biomes.Count; i++)
-                BiomeLibs.biomes.Values.ToList()[i].ReceiveCustomBiomes(reader);
+            /*for (var i = 0; i < BiomeLibs.biomes.Count; i++)
+                BiomeLibs.biomes.Values.ToList()[i].ReceiveCustomBiomes(reader);*/
         }
     }
 }

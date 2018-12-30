@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -14,43 +14,38 @@ namespace BiomeLibrary.API
     {
 
         private readonly int _runtimeID;
-        
+
         public readonly IList<int> biomeBlock = new List<int>(); //List of block ID, this list cannot overriden
         public readonly IList<int> npcList = new List<int>();
 
         private int _tileCount;
-        public int minimumTileRequirement;
+        private int _minimumTileRequirement;
 
         private string _biomeName = "";
 
-        private bool _isValid;
         private bool _isHallowAlt;
 
-        protected Mod _mod;
+        public Mod mod { get; internal set; }
 
-        public Mod mod
+        public int MinimumTileRequirement
         {
-            get => _mod;
-            internal set => _mod = value;
+            get => _minimumTileRequirement;
+            set => _minimumTileRequirement = value;
         }
 
         public bool IsHallowAlt
         {
-            get => IsHallowAlt;
-            set => IsHallowAlt = value;
+            get => _isHallowAlt;
+            set => _isHallowAlt = value;
         }
 
-        public String biomeName //Set biome name
+        public String BiomeName //Set biome name
         {
             get => _biomeName;
             set => _biomeName = value;
-        } 
-
-        internal bool Valid
-        {
-            get => IsValid();
-            set => _isValid = value;
         }
+
+        internal bool Valid => _tileCount >= MinimumTileRequirement && condition();
 
         internal int TileCount
         {
@@ -68,11 +63,7 @@ namespace BiomeLibrary.API
 
         }
 
-        private bool IsValid()
-        {
-            _isValid = _tileCount >= minimumTileRequirement && condition();
-            return _isValid;
-        }
+
 
         public virtual bool condition()
         {
@@ -85,12 +76,12 @@ namespace BiomeLibrary.API
             return false;
         }
 
-        public virtual void SetMobSpawning(IDictionary<int, int> pool)
+        public virtual void SetMobSpawning(IDictionary<int, int> pool) //To be implemented yet
         {
 
         }
 
-        private void resetTileCount()
+        internal void resetTileCount()
         {
             _tileCount = 0;
         }
@@ -106,21 +97,7 @@ namespace BiomeLibrary.API
 
         public bool InBiome()
         {
-            return Valid;
-        }
-
-        public void SendCustomBiomes(BinaryWriter writer)
-        {
-            var flags = new BitsByte();
-            flags[0] = Valid;
-            writer.Write(flags);
-        }
-
-
-        public void ReceiveCustomBiomes(BinaryReader reader)
-        {
-            BitsByte flag = reader.ReadByte();
-            _isValid = flag[0];
+            return Main.LocalPlayer != null && Valid;
         }
     }
 }

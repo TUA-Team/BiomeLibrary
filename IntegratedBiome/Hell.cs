@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BiomeLibrary.API;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 
 namespace BiomeLibrary.IntegratedBiome
 {
@@ -14,7 +15,8 @@ namespace BiomeLibrary.IntegratedBiome
         public override void SetDefault()
         {
             IsHallowAlt = false;
-            minimumTileRequirement = 0;
+            MinimumTileRequirement = 0;
+            biomeBlock.Add(TileID.Ash);
         }
 
         public override bool condition()

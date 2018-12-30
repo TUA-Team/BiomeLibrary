@@ -49,7 +49,6 @@
     <Compile Include="background\BiomeSurfaceBg.cs" />
     <Compile Include="BiomeLibs.cs" />
     <Compile Include="BiomePlayer.cs" />
-    <Compile Include="BiomeSkeleton.cs" />
     <Compile Include="BiomeWorld.cs" />
     <Compile Include="Commands\ChangeWorldSize.cs" />
     <Compile Include="IntegratedBiome\Hell.cs" />
