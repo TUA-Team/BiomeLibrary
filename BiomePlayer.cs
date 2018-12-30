@@ -18,30 +18,22 @@ namespace BiomeLibrary
             BiomeLibs.player = Main.LocalPlayer.GetModPlayer<BiomePlayer>();
         }
 
-        public override void UpdateBiomes()
-        {
-            for (var i = 0; i < BiomeLibs.name.Count; i++)
-                BiomeLibs.biomeRegistery[BiomeLibs.name[i]] = BiomeLibs.BiomeList[BiomeLibs.name[i]].isValid();
-        }
-
+        [Obsolete("Now use ModBiome.InBiome()", false)]
         public bool Inbiome(string biomeName)
         {
-            return BiomeLibs.BiomeList[biomeName].isValid() && Main.player[Main.myPlayer].active;
+            return false;
         }
 
         public override void SendCustomBiomes(BinaryWriter writer)
         {
-            var flags = new BitsByte();
-            for (var i = 0; i < BiomeLibs.name.Count; i++)
-                flags[i] = BiomeLibs.biomeRegistery[BiomeLibs.name[i]];
-            writer.Write(flags);
+            for (var i = 0; i < BiomeLibs.biomes.Count; i++)
+                BiomeLibs.biomes.Values.ToList()[i].SendCustomBiomes(writer);
         }
 
         public override void ReceiveCustomBiomes(BinaryReader reader)
         {
-            BitsByte flag = reader.ReadByte();
-            for (var i = 0; i < BiomeLibs.name.Count; i++)
-                BiomeLibs.biomeRegistery[BiomeLibs.name[i]] = flag[i];
+            for (var i = 0; i < BiomeLibs.biomes.Count; i++)
+                BiomeLibs.biomes.Values.ToList()[i].ReceiveCustomBiomes(reader);
         }
     }
 }

@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BiomeLibrary</RootNamespace>
     <AssemblyName>BiomeLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -41,11 +42,17 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="API\BiomeLoader.cs" />
+    <Compile Include="API\BiomePriority.cs" />
+    <Compile Include="API\ModBiome.cs" />
+    <Compile Include="API\ModExtension.cs" />
     <Compile Include="background\BiomeSurfaceBg.cs" />
     <Compile Include="BiomeLibs.cs" />
     <Compile Include="BiomePlayer.cs" />
     <Compile Include="BiomeSkeleton.cs" />
     <Compile Include="BiomeWorld.cs" />
+    <Compile Include="Commands\ChangeWorldSize.cs" />
+    <Compile Include="IntegratedBiome\Hell.cs" />
     <Compile Include="NPCs\BiomeGlobalNPC.cs" />
     <Compile Include="NPCs\BiomeNPCInfo.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
@@ -76,7 +83,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"D:\steam game\steamapps\steamapps\common\Terraria\Terraria.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>"D:\steam game\steamapps\steamapps\common\Terraria\tModLoaderServer.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

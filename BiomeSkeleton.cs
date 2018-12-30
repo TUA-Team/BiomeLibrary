@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 
 namespace BiomeLibrary
 {
+    [Obsolete("This class is now replaced with Mod Biome")]
     public class BiomeSkeleton
     {
         public List<String> blockList;
@@ -42,10 +43,6 @@ namespace BiomeLibrary
         public int tileCount(int[] tileCounts)
         {
             biomeTileCount = 0;
-            Vector2 plr_pos = Main.player[Main.myPlayer].Center / 16;
-            Vector2 sc_size = new Vector2(Main.screenWidth, Main.screenHeight) / 32;
-            int light_size = 5;
-
             foreach(int i in blockListID) {
                 biomeTileCount += tileCounts[i];
             }

@@ -13,6 +13,7 @@ namespace BiomeLibrary.NPCs
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
+            
             base.EditSpawnPool(pool, spawnInfo);
         }
 

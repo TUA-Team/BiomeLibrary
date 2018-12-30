@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BiomeLibrary.API;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameContent.Generation;
@@ -15,32 +16,9 @@ namespace BiomeLibrary
 {
     public class BiomeWorld : ModWorld
     {
-
-        public override void Initialize()
-        {
-            RegisterMarble();
-            RegisterGranite();
-            RegisterHell();
-        }
-
-        private static void RegisterGranite()
-        {
-            BiomeLibs.RegisterNewBiome("granite", 80, null);
-            BiomeLibs.AddBlockInBiomeByID("granite", new int[] { TileID.Granite });
-        }
-
-        private static void RegisterMarble()
-        {
-            BiomeLibs.RegisterNewBiome("marble", 80, null);
-            BiomeLibs.AddBlockInBiomeByID("marble", new int[] { TileID.Marble });
-        }
-
-        private static void RegisterHell()
-        {
-            Func<bool> c = () => (Main.player[Main.myPlayer].position.Y / 16) > Main.maxTilesY - 200;
-            BiomeLibs.RegisterNewBiome("hell", 0, null);
-            BiomeLibs.SetCondition("hell", c);
-        }
+        public static bool infinite = false;
+        public static bool chunked = false;
+        public static readonly bool x64Terraria = IntPtr.Size == 8;
 
         public override void PostUpdate()
         {
@@ -48,166 +26,130 @@ namespace BiomeLibrary
 
         public override void Load(TagCompound tag)
         {
-
             BiomeLibs.world = mod.GetModWorld<BiomeWorld>();
             resetList();
             base.Load(tag);
         }
 
+        public override TagCompound Save()
+        {
+            TagCompound tag = new TagCompound();
+            tag.Add("64bit", x64Terraria);
+            tag.Add("chunked", chunked);
+            tag.Add("infinite", infinite);
+            return tag;
+        }
+
+
         public void resetList() {
             BiomeLibs.reset();
         }
 
-
+        [Obsolete("Now integrated into ModBiome", true)]
         internal void addBlock(String biomeName, String[] block)
         {
-
-            for (int i = 0; i < BiomeLibs.name.Count; i++)
-            {
-                if (BiomeLibs.name[i] == biomeName)
-                {
-                    BiomeLibs.BiomeList[biomeName].registerTile(block);
-                }
-            }
         }
 
+        [Obsolete("Now integrated into ModBiome", true)]
         internal void addBlock(String biomeName, int[] blockID)
         {
-
-            for (int i = 0; i < BiomeLibs.name.Count; i++)
-            {
-                if (BiomeLibs.name[i] == biomeName)
-                {
-                    BiomeLibs.BiomeList[biomeName].registerTile(blockID);
-                }
-            }
         }
 
         public override void TileCountsAvailable(int[] tileCounts)
         {
-            for (int i = 0; i < BiomeLibs.name.Count; i++)
-            {
-                BiomeLibs.BiomeList[BiomeLibs.name[i]].tileCount(tileCounts);
-            }
+            for (int i = 0; i < BiomeLibs.biomes.Count; i++)
+                BiomeLibs.biomes.Values.ToList()[i].tileCount(tileCounts);
         }
 
         public override void ResetNearbyTileEffects()
         {
-            for (int i = 0; i < BiomeLibs.name.Count; i++)
-            {
-                BiomeLibs.BiomeList[BiomeLibs.name[i]].resetTileCount();
-            }
+            for (int i = 0; i < BiomeLibs.biomes.Count; i++)
+                BiomeLibs.biomes.Values.ToList()[i].TileCount = 0;
         }
 
         public override void ModifyHardmodeTasks(List<GenPass> list)
         {
             Main.hardMode = true;
-
-            /*if (BiomeLibs.hallowAltList.Count != 0)
-            {*/
-
-                list[0] = (new PassLegacy("Hardmode Good", delegate
+            list[0] = (new PassLegacy("Hardmode Good", delegate
+            {
+                
+                float num = (float)WorldGen.genRand.Next(300, 400) * 0.001f;
+                float num2 = (float)WorldGen.genRand.Next(200, 300) * 0.001f;
+                int num3 = (int)((float)Main.maxTilesX * num);
+                int num4 = (int)((float)Main.maxTilesX * (1f - num));
+                int num5 = 1;
+                if (WorldGen.genRand.Next(2) == 0)
                 {
-                    
-                    float num = (float)WorldGen.genRand.Next(300, 400) * 0.001f;
-                    float num2 = (float)WorldGen.genRand.Next(200, 300) * 0.001f;
-                    int num3 = (int)((float)Main.maxTilesX * num);
-                    int num4 = (int)((float)Main.maxTilesX * (1f - num));
-                    int num5 = 1;
-                    if (WorldGen.genRand.Next(2) == 0)
+                    num4 = (int)((float)Main.maxTilesX * num);
+                    num3 = (int)((float)Main.maxTilesX * (1f - num));
+                    num5 = -1;
+                }
+                int num6 = 1;
+                if (WorldGen.dungeonX < Main.maxTilesX / 2)
+                {
+                    num6 = -1;
+                }
+                if (num6 < 0)
+                {
+                    if (num4 < num3)
                     {
-                        num4 = (int)((float)Main.maxTilesX * num);
-                        num3 = (int)((float)Main.maxTilesX * (1f - num));
-                        num5 = -1;
-                    }
-                    int num6 = 1;
-                    if (WorldGen.dungeonX < Main.maxTilesX / 2)
-                    {
-                        num6 = -1;
-                    }
-                    if (num6 < 0)
-                    {
-                        if (num4 < num3)
-                        {
-                            num4 = (int)((float)Main.maxTilesX * num2);
-                        }
-                        else
-                        {
-                            num3 = (int)((float)Main.maxTilesX * num2);
-                        }
-                    }
-                    else if (num4 > num3)
-                    {
-                        num4 = (int)((float)Main.maxTilesX * (1f - num2));
+                        num4 = (int)((float)Main.maxTilesX * num2);
                     }
                     else
                     {
-                        num3 = (int)((float)Main.maxTilesX * (1f - num2));
+                        num3 = (int)((float)Main.maxTilesX * num2);
                     }
+                }
+                else if (num4 > num3)
+                {
+                    num4 = (int)((float)Main.maxTilesX * (1f - num2));
+                }
+                else
+                {
+                    num3 = (int)((float)Main.maxTilesX * (1f - num2));
+                }
 
-                    int rand = Main.rand.Next(0,BiomeLibs.hallowAltList.Count);
-                    
-                    if (rand == 0)
+                bool rand = Main.rand.NextBool();
+                
+                if (rand)
+                {
+                    WorldGen.GERunner(num3, 0, 3f * (float)3*num5, 5f, true);
+                }
+                else
+                {
+                    ModBiome biome;
+                    while (true)
                     {
-                        Main.NewText("Hallow has generated", Color.Red);
-                        WorldGen.GERunner(num3, 0, 3f * (float)3*num5, 5f, true);
-                    }
-                    else
-                    {
-                        string message = BiomeLibs.BiomeList[BiomeLibs.hallowAltList[rand]].getMessage();
-                        if (message != null)
+
+                        biome =
+                            BiomeLibs.biomes.Values.ToList()[
+                                Main.rand.Next(BiomeLibs.biomes.Values.ToList().Count)];
+                        if (biome.IsHallowAlt)
                         {
-                            Main.NewText(message, Color.Red);
+                            break;
                         }
-                        else {
-                            Main.NewText(BiomeLibs.hallowAltList[rand] + "has generated", Color.Red);
-                        }
-                        
-
-                        BWRunner(num3, 0, blockFinder(BiomeLibs.hallowAltList[rand]), BiomeLibs.BiomeList[BiomeLibs.hallowAltList[rand]].mod, (float)(3 * num5), 5f);
                     }
-                }));
-            //}
+
+                    String message = "";
+                    if (!biome.HallowAltGeneration(ref message))
+                    {
+                        BWRunner(num3, 0, blockFinder(biome.biomeBlock), (float)(3 * num5), 5f);
+                    }  
+                }
+            }));
         }
 
-        private String[] blockFinder(String biomeName)
+        private int[] blockFinder(IList<int> biomeBlockList)
         {
-            String text = "";
-            String[] blockList = { "Grass", "Stone", "Sand", "Dirt", "Ice" };
-            text += BiomeLibs.BiomeList[biomeName].mod.Name + "           ";
-            for (int i = 0; i < BiomeLibs.BiomeList[biomeName].blockList.Count; i++)
-            {
-                if (BiomeLibs.BiomeList[biomeName].blockList[i].Contains("dirt") ||
-                    BiomeLibs.BiomeList[biomeName].blockList[i].Contains("Dirt"))
-                {
-                    blockList[3] = BiomeLibs.BiomeList[biomeName].blockList[i];
-                }
-                else if (BiomeLibs.BiomeList[biomeName].blockList[i].Contains("sand") ||
-                         BiomeLibs.BiomeList[biomeName].blockList[i].Contains("Sand"))
-                {
-                    blockList[2] = BiomeLibs.BiomeList[biomeName].blockList[i];
-                }
-                else if (BiomeLibs.BiomeList[biomeName].blockList[i].Contains("stone") ||
-                           BiomeLibs.BiomeList[biomeName].blockList[i].Contains("Stone"))
-                {
-                    blockList[1] = BiomeLibs.BiomeList[biomeName].blockList[i];
-                }
-                else if (BiomeLibs.BiomeList[biomeName].blockList[i].Contains("grass") ||
-                    BiomeLibs.BiomeList[biomeName].blockList[i].Contains("Grass"))
-                {
-                    blockList[0] = BiomeLibs.BiomeList[biomeName].blockList[i];
-                }
-                else if (BiomeLibs.BiomeList[biomeName].blockList[i].Contains("Ice") ||
-                         BiomeLibs.BiomeList[biomeName].blockList[i].Contains("ice"))
-                {
-                    blockList[4] = BiomeLibs.BiomeList[biomeName].blockList[i];
-                }
-                
-            }
+            int[] blockList = { TileID.Grass, TileID.Dirt, TileID.Stone, TileID.Sand, TileID.Sandstone};            blockList[0] = ModExtension.FindTileIDInArray("Grass", biomeBlockList);
+            blockList[1] = ModExtension.FindTileIDInArray("Dirt", biomeBlockList);
+            blockList[2] = ModExtension.FindTileIDInArray("Stone", "Sand", biomeBlockList);
+            blockList[3] = ModExtension.FindTileIDInArray("Sand", "Stone", biomeBlockList);
+            blockList[4] = ModExtension.FindTileIDInArray("Ice", biomeBlockList);
             return blockList;
         }
 
-        private void BWRunner(int i, int j, String[] blockList, Mod mod, float speedX = 0f, float speedY = 0f)
+        private void BWRunner(int i, int j, int[] blockList, float speedX = 0f, float speedY = 0f)
         {
             String text = "";
             text += mod.Name + "           ";
@@ -268,30 +210,30 @@ namespace BiomeLibrary
                             {
                                 Main.tile[k, l].wall = 28;
                             }*/
-                            if (Main.tile[k, l].type == 0 && blockList[3] != "Dirt" && blockList[3].Contains("Dirt") || blockList[3].Contains("dirt"))
+                            if (Main.tile[k, l].type == 0 || Main.tile[k, l].type == TileID.Mud)
                             {
-                                Main.tile[k, l].type = (ushort)mod.TileType(blockList[3]);
+                                Main.tile[k, l].type = (ushort) blockList[3];
                                 WorldGen.SquareTileFrame(k, l, true);
                             }
-                            if (Main.tile[k, l].type == 1 || Main.tile[k, l].type == 25 || Main.tile[k, l].type == 203 && blockList[1] != "Stone" && blockList[1].Contains("Stone") || blockList[1].Contains("stone"))
+                            if (Main.tile[k, l].type == 1 || Main.tile[k, l].type == 25 || Main.tile[k, l].type == 203)
                             {
-                                Main.tile[k, l].type = (ushort)mod.TileType(blockList[1]);
+                                Main.tile[k, l].type = (ushort)blockList[1];
                                 WorldGen.SquareTileFrame(k, l, true);
                             }
-                            if (Main.tile[k, l].type == 2 || Main.tile[k, l].type == 23 || Main.tile[k, l].type == 199 && blockList[0] != "Grass" && blockList[0].Contains("Grass") || blockList[0].Contains("grass"))
+                            if (Main.tile[k, l].type == 2 || Main.tile[k, l].type == 23 || Main.tile[k, l].type == 199)
                             {
-                                Main.tile[k, l].type = (ushort)mod.TileType(blockList[0]);
+                                Main.tile[k, l].type = (ushort)blockList[0];
                                 WorldGen.SquareTileFrame(k, l, true);
                             }
-                            if (Main.tile[k, l].type == 53 || Main.tile[k, l].type == 123 || Main.tile[k, l].type == 112 || Main.tile[k, l].type == 234 && blockList[2] != "Sand" && blockList[2].Contains("Sand") || blockList[2].Contains("sand"))
+                            if (Main.tile[k, l].type == 53 || Main.tile[k, l].type == 123 || Main.tile[k, l].type == 112 || Main.tile[k, l].type == 234)
                             {
-                                Main.tile[k, l].type = (ushort)mod.TileType(blockList[2]);
+                                Main.tile[k, l].type = (ushort)blockList[2];
                                 WorldGen.SquareTileFrame(k, l, true);
                             }
-                            if (Main.tile[k, l].type == 161 || Main.tile[k, l].type == 163 || Main.tile[k, l].type == 200 && blockList[4] != "Ice" && blockList[4].Contains("Ice") || blockList[4].Contains("ice"))
+                            if (Main.tile[k, l].type == 161 || Main.tile[k, l].type == 163 || Main.tile[k, l].type == 200)
                             {
-                                Main.tile[k, l].type = (ushort)mod.TileType(blockList[4]);
-                                WorldGen.SquareTileFrame(k, l, true);
+                                Main.tile[k, l].type = (ushort)blockList[4];
+                                WorldGen.SquareTileFrame(k, l, true);     
                             }
                         }
                     }

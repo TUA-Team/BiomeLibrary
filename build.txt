@@ -1,6 +1,7 @@
-author = Dradonhunter11
-version = 0.3
+author = TUA mod team
+version = 0.3.1
 displayName = BiomeLibs
 homepage = https://forums.terraria.org/index.php?threads/biomelibs-a-mod-to-easily-create-biome-and-hallow-alt.65009/
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
 includePDB = true
+languageVersion = 6

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using BiomeLibrary.API;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -9,13 +11,11 @@ namespace BiomeLibrary
     public class BiomeLibs : Mod
 	{
 	    public static BiomePlayer player;
-	    public static Collection<String> name;
 	    public static BiomeWorld world;
 	    public static Mod instance;
-	    public static Dictionary<String, bool> biomeRegistery;
-	    public static Dictionary<String, BiomeSkeleton> BiomeList;
-	    public static Collection<String> hallowAltList;
 
+
+        public static Dictionary<String, ModBiome> biomes = new Dictionary<string, ModBiome>();
 
         public BiomeLibs()
 		{
@@ -33,52 +33,41 @@ namespace BiomeLibrary
 
 	    public override void Unload()
 	    {
-	        name = null;
-            biomeRegistery = null;
-            BiomeList = null;
-	        instance = null;
-	        hallowAltList = null;
+            biomes = new Dictionary<string, ModBiome>();
 	    }
 
 	    public override void Load()
 	    {
 	        instance = this;
             reset();
+	        LoadModContent(mod =>
+	        {
+	            Autoload(mod);
+	        });
         }
 
         internal static void reset() {
-            name = new Collection<string>();
-            biomeRegistery = new Dictionary<string, bool>();
-            BiomeList = new Dictionary<string, BiomeSkeleton>();
-            hallowAltList = new Collection<string>();
+            biomes.Clear();
         }
 
-	    public static void RegisterNewBiome(String biomeName, int minTileRequired, Mod mod)
+	    [Obsolete("Now automaticaly loaded on Mod Loading", true)]
+        public static void RegisterNewBiome(String biomeName, int minTileRequired, Mod mod)
 	    {
-	        biomeRegistery.Remove(biomeName);
-	        BiomeList.Remove(biomeName);
-            name.Add(biomeName);
-	        biomeRegistery.Add(biomeName, false);
-	        BiomeList.Add(biomeName, new BiomeSkeleton(minTileRequired, mod));
 	    }
 
-	    public static void addHallowAltBiome(String biomeName, string message = null)
+	    [Obsolete("Now integrated into ModBiome", true)]
+        public static void addHallowAltBiome(String biomeName, string message = null)
 	    {
-	        if (name.Contains(biomeName))
-	        {
-                hallowAltList.Add(biomeName);
-                if (message != null) {
-                    BiomeList[biomeName].setMessage(message);
-                }
-	        }
 	    }
 
-	    public static bool InBiome(String biomeName)
+	    [Obsolete("Now integrated into ModBiome", true)]
+        public static bool InBiome(String biomeName)
 	    {
-	        return BiomeList.ContainsKey(biomeName) && BiomeList[biomeName].isValid() && Main.player[Main.myPlayer].active;
-        }
+	        return false;
+	    }
 
-	    public static void AddBlockInBiome(String biomeName, String[] blockName)
+	    [Obsolete("Now integrated into ModBiome", true)]
+        public static void AddBlockInBiome(String biomeName, String[] blockName)
 	    {
 	        if (world == null)
 	        {
@@ -87,6 +76,7 @@ namespace BiomeLibrary
 	        world.addBlock(biomeName, blockName);
 	    }
 
+	    [Obsolete("Now integrated into ModBiome", true)]
         public static void AddBlockInBiomeByID(String biomeName, int[] blockID)
         {
             if (world == null)
@@ -96,20 +86,51 @@ namespace BiomeLibrary
             world.addBlock(biomeName, blockID);
         }
 
+	    [Obsolete("Now integrated into ModBiome", true)]
         public static void setBlockMin(String biomeName, int limit) {
-            if (name.Contains(biomeName))
-            {
-                BiomeList[biomeName].SetMinTile(limit);
-            }
         }
 
         public static void SetCondition(String biomeName, Func<bool> condition)
         {
-            
-            if (name.Contains(biomeName))
-            {
-                BiomeList[biomeName].SetCondition(condition);
-            }
         }
+
+	    internal void Autoload(Mod mod)
+	    {
+
+	        if (mod.Code == null)
+	            return;
+
+	        foreach (Type type in mod.Code.GetTypes().OrderBy(type => type.FullName, StringComparer.InvariantCulture))
+	        {
+	            if (type.IsSubclassOf(typeof(ModBiome)))
+	            {
+                    
+	                AutoloadBiome(mod.Name, type);
+	            }
+
+	        }
+	    }
+
+	    private static void LoadModContent(Action<Mod> loadAction)
+	    {
+	        //Object o = new OverworldHandler();
+	        int num = 0;
+	        foreach (var mod in ModLoader.LoadedMods)
+	        {
+	            try
+	            {
+	                loadAction(mod);
+	            }
+	            catch (Exception e)
+	            {
+	            }
+	        }
+	    }
+
+	    private void AutoloadBiome(String modName, Type type)
+	    {
+	        ModBiome biome = (ModBiome)Activator.CreateInstance(type);
+            biomes.Add(modName + ":" + type.Name, biome);
+	    }
     }
 }
