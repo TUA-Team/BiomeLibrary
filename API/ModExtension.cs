@@ -30,19 +30,17 @@ namespace BiomeLibrary.API
             biome.SetDefault();
 
             BiomeLibs.Biomes.Add(mod.Name + ":" + type.Name, biome);
-            ErrorLogger.Log(mod.Name + ":" + type.Name);
-
         }
 
         public static int BiomeType(this Mod self, string biomeName) => self.GetBiome(biomeName).RuntimeID;
         public static int BiomeType<T>(this Mod self) where T : ModBiome => self.GetBiome<T>().RuntimeID;
 
-        public static ushort FindTileIDInArray(string tileName, IList<int> tile)
+        public static ushort FindTileIDInArray(string whatItNeedToEndWith, IList<int> tile)
         {
             foreach (var tileID in tile)
             {
                 ModTile modTile = TileLoader.GetTile(tileID);
-                if (modTile.Name.Contains(tileName))
+                if (modTile.Name.EndsWith(whatItNeedToEndWith))
                 {
                     return modTile.Type;
                 }
@@ -50,12 +48,12 @@ namespace BiomeLibrary.API
             return 1;
         }
 
-        public static ushort FindTileIDInArray(string whatItNeedToContain, string whatItDoesntNeedToContain, IList<int> tile)
+        public static ushort FindTileIDInArray(string whatItNeedToEndWith, string whatItDoesntNeedToContain, IList<int> tile)
         {
             foreach (var tileID in tile)
             {
                 ModTile modTile = TileLoader.GetTile(tileID);
-                if (modTile.Name.Contains(whatItNeedToContain) && !modTile.Name.Contains(whatItDoesntNeedToContain))
+                if (modTile.Name.EndsWith(whatItNeedToEndWith) && !modTile.Name.Contains(whatItDoesntNeedToContain))
                 {
                     return modTile.Type;
                 }

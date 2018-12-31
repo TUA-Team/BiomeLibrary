@@ -14,12 +14,11 @@ namespace BiomeLibrary.IntegratedBiome
     {
         public override void SetDefault()
         {
-            IsHallowAlt = false;
             MinimumTileRequirement = 0;
             biomeBlock.Add(TileID.Ash);
         }
 
-        public override bool condition()
+        public override bool Condition()
         {
             Vector2 playerPos = Main.LocalPlayer.Center / 16;
             return playerPos.Y < Main.maxTilesY - 200;

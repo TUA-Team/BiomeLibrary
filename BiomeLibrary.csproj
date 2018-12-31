@@ -51,6 +51,8 @@
     <Compile Include="BiomePlayer.cs" />
     <Compile Include="BiomeWorld.cs" />
     <Compile Include="Commands\ChangeWorldSize.cs" />
+    <Compile Include="Enums\BiomeAlternative.cs" />
+    <Compile Include="Enums\EvilSpecific.cs" />
     <Compile Include="IntegratedBiome\Hell.cs" />
     <Compile Include="NPCs\BiomeGlobalNPC.cs" />
     <Compile Include="NPCs\BiomeNPCInfo.cs" />

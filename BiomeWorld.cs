@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BiomeLibrary.API;
+using BiomeLibrary.Enums;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameContent.Generation;
@@ -53,13 +54,13 @@ namespace BiomeLibrary
         public override void TileCountsAvailable(int[] tileCounts)
         {
             for (int i = 0; i < BiomeLibs.Biomes.Count; i++)
-                BiomeLibs.Biomes.Values.ToList()[i].tileCount(tileCounts);
+                BiomeLibs.Biomes.Values.ToList()[i].InternalTileCount(tileCounts);
         }
 
         public override void ResetNearbyTileEffects()
         {
             for (int i = 0; i < BiomeLibs.Biomes.Count; i++)
-                BiomeLibs.Biomes.Values.ToList()[i].resetTileCount();
+                BiomeLibs.Biomes.Values.ToList()[i].ResetTileCount();
         }
 
         public override void ModifyHardmodeTasks(List<GenPass> list)
@@ -113,20 +114,23 @@ namespace BiomeLibrary
                 else
                 {
                     ModBiome biome;
+                    EvilSpecific currentEvil = (Main.ActiveWorldFileData.HasCorruption)
+                        ? EvilSpecific.corruption
+                        : EvilSpecific.crimson;
                     while (true)
                     {
-
                         biome =
                             BiomeLibs.Biomes.Values.ToList()[
                                 Main.rand.Next(BiomeLibs.Biomes.Values.ToList().Count)];
-                        if (biome.IsHallowAlt)
+                        if (biome.BiomeAlt == BiomeAlternative.hallowAlt && 
+                            (biome.EvilSpecific == EvilSpecific.both || biome.EvilSpecific == currentEvil))
                         {
                             break;
                         }
                     }
 
                     String message = "";
-                    if (!biome.HallowAltGeneration(ref message))
+                    if (!biome.BiomeAltGeneration(ref message))
                     {
                         BWRunner(num3, 0, blockFinder(biome.biomeBlock), (float)(3 * num5), 5f);
                     }  

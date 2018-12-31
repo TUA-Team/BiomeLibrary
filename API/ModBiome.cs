@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BiomeLibrary.Enums;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,9 +24,14 @@ namespace BiomeLibrary.API
 
         private string _biomeName = "";
 
-        private bool _isHallowAlt;
+        private BiomeAlternative _alt = BiomeAlternative.noAlt;
+        private EvilSpecific _evilSpecific = EvilSpecific.both;
 
-        public Mod mod { get; internal set; }
+        public Mod mod
+        {
+            get;
+            internal set;
+        }
 
         public int MinimumTileRequirement
         {
@@ -33,19 +39,25 @@ namespace BiomeLibrary.API
             set => _minimumTileRequirement = value;
         }
 
-        public bool IsHallowAlt
+        public BiomeAlternative BiomeAlt
         {
-            get => _isHallowAlt;
-            set => _isHallowAlt = value;
+            get => _alt;
+            set => _alt = value;
+        }
+
+        public EvilSpecific EvilSpecific
+        {
+            get => _evilSpecific;
+            set => _evilSpecific = value;
         }
 
         public String BiomeName //Set biome name
         {
-            get => _biomeName;
-            set => _biomeName = value;
+            get;
+            internal set;
         }
 
-        internal bool Valid => _tileCount >= MinimumTileRequirement && condition();
+        internal bool Valid => _tileCount >= MinimumTileRequirement && Condition();
 
         internal int TileCount
         {
@@ -63,30 +75,23 @@ namespace BiomeLibrary.API
 
         }
 
-
-
-        public virtual bool condition()
+        public virtual bool Condition()
         {
             return true;
         }
 
-        public virtual bool HallowAltGeneration(ref String message)
+        public virtual bool BiomeAltGeneration(ref String message)
         {
             message = "An hallow alt has been generated";
             return false;
         }
 
-        public virtual void SetMobSpawning(IDictionary<int, int> pool) //To be implemented yet
-        {
-
-        }
-
-        internal void resetTileCount()
+        internal void ResetTileCount()
         {
             _tileCount = 0;
         }
 
-        public virtual int tileCount(int[] tileCounts)
+        internal int InternalTileCount(int[] tileCounts)
         {
             foreach (int i in biomeBlock)
             {
