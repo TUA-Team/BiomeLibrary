@@ -7,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
+using Terraria.World.Generation;
 
 namespace BiomeLibrary.API
 {
@@ -26,6 +28,7 @@ namespace BiomeLibrary.API
 
         private BiomeAlternative _alt = BiomeAlternative.noAlt;
         private EvilSpecific _evilSpecific = EvilSpecific.both;
+        private String _evilSpecificBoundName = "Corruption";
 
         public Mod mod
         {
@@ -51,13 +54,19 @@ namespace BiomeLibrary.API
             set => _evilSpecific = value;
         }
 
+        public String EvilSpecificBoundName
+        {
+            get => _evilSpecificBoundName;
+            protected set => _evilSpecificBoundName = value;
+        }
+
         public String BiomeName //Set biome name
         {
             get;
-            internal set;
+            set;
         }
 
-        internal bool Valid => _tileCount >= MinimumTileRequirement && Condition();
+        internal bool Valid => !WorldGen.gen && _tileCount >= MinimumTileRequirement && Condition();
 
         internal int TileCount
         {
@@ -80,9 +89,40 @@ namespace BiomeLibrary.API
             return true;
         }
 
+        [Obsolete("This is deprecated, pls use BiomeAltHardmodeGeneration")]
         public virtual bool BiomeAltGeneration(ref String message)
         {
+            return BiomeAltHardmodeGeneration(ref message);
+        }
+
+        /// <summary>
+        /// This is specific to hardmode generation
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public virtual bool BiomeAltHardmodeGeneration(ref String message)
+        {
             message = "An hallow alt has been generated";
+            return false;
+        }
+
+        public virtual void BiomeAltWorldGeneration(GenerationProgress progress, PassLegacy pass)
+        {
+        }
+
+        /// <summary>
+        /// Those next hook are W.I.P
+        /// </summary>
+        public virtual void OnEnter()
+        {
+        }
+
+        public virtual void OnExit()
+        {
+        }
+
+        public virtual bool OnNearby(float percent)
+        {
             return false;
         }
 

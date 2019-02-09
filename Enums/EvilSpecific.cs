@@ -10,6 +10,7 @@ namespace BiomeLibrary.Enums
     {
         corruption = 0, //Corruption tied biome
         crimson = 1, //Crimson tied biome
-        both = 2
+        both = 2,
+        other = 3
     }
 }

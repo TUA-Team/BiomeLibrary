@@ -42,7 +42,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="API\BiomeLoader.cs" />
     <Compile Include="API\BiomePriority.cs" />
     <Compile Include="API\ModBiome.cs" />
     <Compile Include="API\ModExtension.cs" />
@@ -50,15 +49,19 @@
     <Compile Include="BiomeLibs.cs" />
     <Compile Include="BiomePlayer.cs" />
     <Compile Include="BiomeWorld.cs" />
+    <Compile Include="EvilGen.cs" />
     <Compile Include="Commands\ChangeWorldSize.cs" />
     <Compile Include="Enums\BiomeAlternative.cs" />
     <Compile Include="Enums\EvilSpecific.cs" />
+    <Compile Include="HardModeGen.cs" />
     <Compile Include="IntegratedBiome\Hell.cs" />
     <Compile Include="NPCs\BiomeGlobalNPC.cs" />
     <Compile Include="NPCs\BiomeNPCInfo.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="UIModification\EvilSelection.cs" />
+    <Compile Include="UIModification\UIMenuButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
@@ -77,14 +80,19 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Xact\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Xact.dll</HintPath>
     </Reference>
+    <Reference Include="ReLogic">
+      <HintPath>..\..\..\..\..\..\TerrariaFullsource\ReLogic.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="Terraria">
-      <HintPath>..\..\..\..\..\..\steam game\steamapps\steamapps\common\Terraria\Terraria.exe</HintPath>
+    <Reference Include="Terraria, Version=1.3.5.1, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Terraria\Terraria.exe</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"D:\steam game\steamapps\steamapps\common\Terraria\tModLoaderServer.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files (x86)\Steam\steamapps\common\Terraria\tModLoaderServer.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

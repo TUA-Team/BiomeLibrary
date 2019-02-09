@@ -40,12 +40,12 @@ namespace BiomeLibrary.API
             foreach (var tileID in tile)
             {
                 ModTile modTile = TileLoader.GetTile(tileID);
-                if (modTile.Name.EndsWith(whatItNeedToEndWith))
+                if (modTile != null && modTile.Name.EndsWith(whatItNeedToEndWith))
                 {
                     return modTile.Type;
                 }
             }
-            return 1;
+            return 0;
         }
 
         public static ushort FindTileIDInArray(string whatItNeedToEndWith, string whatItDoesntNeedToContain, IList<int> tile)
@@ -53,12 +53,12 @@ namespace BiomeLibrary.API
             foreach (var tileID in tile)
             {
                 ModTile modTile = TileLoader.GetTile(tileID);
-                if (modTile.Name.EndsWith(whatItNeedToEndWith) && !modTile.Name.Contains(whatItDoesntNeedToContain))
+                if (modTile != null && modTile.Name.EndsWith(whatItNeedToEndWith) && !modTile.Name.Contains(whatItDoesntNeedToContain))
                 {
                     return modTile.Type;
                 }
             }
-            return 1;
+            return 0;
         }
     }
 }

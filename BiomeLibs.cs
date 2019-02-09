@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using BiomeLibrary.API;
+using BiomeLibrary.UIModification;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -13,6 +14,8 @@ namespace BiomeLibrary
 		public static BiomePlayer Player;
 		public static BiomeWorld World;
 		public static Mod Instance;
+
+        private readonly EvilSelection newEvilSelection = new EvilSelection();
 
 
 		public static Dictionary<String, ModBiome> Biomes = new Dictionary<string, ModBiome>();
@@ -41,10 +44,14 @@ namespace BiomeLibrary
 		{
 			Biomes = new Dictionary<string, ModBiome>();
 			Instance = this;
-			LoadModContent(Autoload);
 		}
 
-		internal void Autoload(Mod mod)
+	    public override void PostSetupContent()
+	    {
+	        LoadModContent(Autoload);
+        }
+
+	    internal void Autoload(Mod mod)
 		{
 
 			if (mod.Code == null)
@@ -60,11 +67,20 @@ namespace BiomeLibrary
 			}
 		}
 
-		private static void LoadModContent(Action<Mod> loadAction)
+	    public override void UpdateMusic(ref int music, ref MusicPriority priority)
+	    {
+	        if (Main.menuMode == -71)
+	        {
+	            Main.menuMode = 888;
+	            Main.MenuUI.SetState(newEvilSelection);
+	        }
+	    }
+
+	    private static void LoadModContent(Action<Mod> loadAction)
 		{
 			//Object o = new OverworldHandler();
 			int num = 0;
-			foreach (var mod in ModLoader.LoadedMods)
+			foreach (var mod in ModLoader.Mods)
 			{
 				try
 				{
@@ -75,7 +91,5 @@ namespace BiomeLibrary
 				}
 			}
 		}
-
-		
 	}
 }
