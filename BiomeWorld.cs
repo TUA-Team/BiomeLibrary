@@ -79,11 +79,6 @@ namespace BiomeLibrary
             {
                 tasks[evilIndex] = new PassLegacy("Corruption", (progress) => GenerateEvil(progress, tasks[resetIndex] as PassLegacy));
             }
-
-            if (ModLoader.Mods.Single(i => i.Name == "CalamityMod") != null)
-            {
-                int expandWorldIndex = tasks.FindIndex(i => i.Name == "")
-            }
         }
 
         public override void ModifyHardmodeTasks(List<GenPass> list)
