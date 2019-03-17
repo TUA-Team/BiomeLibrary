@@ -42,17 +42,6 @@ namespace BiomeLibrary
             return tag;
         }
 
-
-        [Obsolete("Now integrated into ModBiome", true)]
-        internal void addBlock(String biomeName, String[] block)
-        {
-        }
-
-        [Obsolete("Now integrated into ModBiome", true)]
-        internal void addBlock(String biomeName, int[] blockID)
-        {
-        }
-
         public override void TileCountsAvailable(int[] tileCounts)
         {
             for (int i = 0; i < BiomeLibs.Biomes.Count; i++)
@@ -69,12 +58,13 @@ namespace BiomeLibrary
         {
             int resetIndex = tasks.FindIndex(i => i.Name == "Reset");
             int terrainIndex = tasks.FindIndex(i => i.Name == "Terrain");
-            int evilIndex = tasks.FindIndex(i => i.Name == "Corruption");
+            
             if (terrainIndex != -1)
             {
                 tasks.Insert(resetIndex + 1, new PassLegacy("Deciding World Evil", (progress) => DecideEvil(progress)));
             }
 
+            int evilIndex = tasks.FindIndex(i => i.Name == "Corruption");
             if (evilIndex != -1)
             {
                 tasks[evilIndex] = new PassLegacy("Corruption", (progress) => GenerateEvil(progress, tasks[resetIndex] as PassLegacy));

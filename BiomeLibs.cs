@@ -15,7 +15,7 @@ namespace BiomeLibrary
 		public static BiomeWorld World;
 		public static Mod Instance;
 
-        private readonly EvilSelection newEvilSelection = new EvilSelection();
+		private readonly EvilSelection newEvilSelection = new EvilSelection();
 
 
 		public static Dictionary<String, ModBiome> Biomes = new Dictionary<string, ModBiome>();
@@ -46,12 +46,12 @@ namespace BiomeLibrary
 			Instance = this;
 		}
 
-	    public override void PostSetupContent()
-	    {
-	        LoadModContent(Autoload);
-        }
+		public override void PostSetupContent()
+		{
+			LoadModContent(Autoload);
+		}
 
-	    internal void Autoload(Mod mod)
+		internal void Autoload(Mod mod)
 		{
 
 			if (mod.Code == null)
@@ -63,20 +63,19 @@ namespace BiomeLibrary
 				{					
 					mod.AutoloadBiome(type);
 				}
-
 			}
 		}
 
-	    public override void UpdateMusic(ref int music, ref MusicPriority priority)
-	    {
-	        if (Main.menuMode == -71)
-	        {
-	            Main.menuMode = 888;
-	            Main.MenuUI.SetState(newEvilSelection);
-	        }
-	    }
+		public override void UpdateMusic(ref int music, ref MusicPriority priority)
+		{
+			if (Main.menuMode == -71)
+			{
+				Main.menuMode = 888;
+				Main.MenuUI.SetState(newEvilSelection);
+			}
+		}
 
-	    private static void LoadModContent(Action<Mod> loadAction)
+		private static void LoadModContent(Action<Mod> loadAction)
 		{
 			//Object o = new OverworldHandler();
 			int num = 0;
