@@ -27,8 +27,10 @@ namespace BiomeLibrary
                 {
                     evilName.Add(biome.BiomeName);
                 }
-                BiomeWorld.PendingEvil = evilName[WorldGen.genRand.Next(evilName.Count)];
+                BiomeWorld.PendingEvil = evilName[WorldGen.genRand.Next(evilName.Count)];               
             }
+            if (BiomeWorld.PendingEvil == "Crimson")
+                WorldGen.crimson = true;
         }
 
         public void GenerateEvil(GenerationProgress progress, PassLegacy pass)
