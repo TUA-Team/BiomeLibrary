@@ -14,6 +14,7 @@ using Terraria.UI;
 
 namespace BiomeLibrary.UIModification
 {
+    [Obsolete("Remaking this entirely")]
     class EvilSelection : UIState
     {
         private UIList allEvilAvailable;

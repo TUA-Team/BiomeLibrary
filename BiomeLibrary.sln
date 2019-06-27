@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiomeLibrary", "BiomeLibrary.csproj", "{8298EAB6-0586-4BDA-9483-83624B66B13A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiomeLibrary", "BiomeLibrary.csproj", "{C69D2286-9EAB-4009-9F64-62AB304C7CB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8298EAB6-0586-4BDA-9483-83624B66B13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8298EAB6-0586-4BDA-9483-83624B66B13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8298EAB6-0586-4BDA-9483-83624B66B13A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8298EAB6-0586-4BDA-9483-83624B66B13A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C69D2286-9EAB-4009-9F64-62AB304C7CB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C69D2286-9EAB-4009-9F64-62AB304C7CB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C69D2286-9EAB-4009-9F64-62AB304C7CB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C69D2286-9EAB-4009-9F64-62AB304C7CB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9055C90B-C51B-4C05-94F3-C2D899B15B53}
 	EndGlobalSection
 EndGlobal

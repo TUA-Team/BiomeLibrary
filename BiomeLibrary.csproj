@@ -79,6 +79,7 @@
     <Compile Include="NPCs\BiomeGlobalNPC.cs" />
     <Compile Include="NPCs\BiomeNPCInfo.cs" />
     <Compile Include="UIModification\EvilSelection.cs" />
+    <Compile Include="UIModification\NewEvilSelection.cs" />
     <Compile Include="UIModification\UIMenuButton.cs" />
   </ItemGroup>
   <ItemGroup>

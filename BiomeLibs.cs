@@ -15,7 +15,7 @@ namespace BiomeLibrary
 		public static BiomeWorld World;
 		public static Mod Instance;
 
-		private readonly EvilSelection newEvilSelection = new EvilSelection();
+		private readonly NewEvilSelection newEvilSelection = new NewEvilSelection();
 
 
 		public static Dictionary<String, ModBiome> Biomes = new Dictionary<string, ModBiome>();
