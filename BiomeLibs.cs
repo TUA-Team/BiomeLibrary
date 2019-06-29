@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using BiomeLibrary.API;
 using BiomeLibrary.UIModification;
+using log4net;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace BiomeLibrary
 {
@@ -70,12 +72,18 @@ namespace BiomeLibrary
 		{
 			if (Main.menuMode == -71)
 			{
-				Main.menuMode = 888;
-				Main.MenuUI.SetState(newEvilSelection);
+				SetMenuUIState(newEvilSelection);
 			}
+            LogManager.GetLogger("MenuID").Info(Main.menuMode);
 		}
 
-		private static void LoadModContent(Action<Mod> loadAction)
+	    internal static void SetMenuUIState(UIState state)
+	    {
+	        Main.menuMode = 888;
+            Main.MenuUI.SetState(state);
+	    }
+
+        private static void LoadModContent(Action<Mod> loadAction)
 		{
 			//Object o = new OverworldHandler();
 			int num = 0;

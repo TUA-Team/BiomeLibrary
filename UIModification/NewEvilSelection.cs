@@ -20,6 +20,8 @@ namespace BiomeLibrary.UIModification
         private UITextPanel<string> leftArrow = new UITextPanel<string>("<", 1f, false);
         private UITextPanel<string> rightArrow = new UITextPanel<string>(">", 1f, false);
         private UITextPanel<string> worldEvilPickText = new UITextPanel<string>("Pick world evil", 1f, true);
+        private UITextPanel<string> selectButton = new UITextPanel<string>("select");
+        private UITextPanel<string> backButton = new UITextPanel<string>("back");
 
         private List<ModBiome> allEvil;
 
@@ -40,6 +42,7 @@ namespace BiomeLibrary.UIModification
             {
                 evilName.Add(biome.BiomeName);
             }
+            evilName.Add("Random");
 
             this.Width.Set(Main.screenWidth, 0);
             this.Height.Set(Main.screenHeight, 0);
@@ -50,15 +53,17 @@ namespace BiomeLibrary.UIModification
             mainPanelContent.HAlign = 0.5f;
             mainPanelContent.VAlign = 0.6f;
             mainPanelContent.Width.Set(500, 0);
-            mainPanelContent.Height.Set(170, 0);
+            mainPanelContent.Height.Set(190, 0);
 
             leftArrow = new UITextPanel<string>("<", 1f, false);
             leftArrow.Width.Set(40, 0);
             leftArrow.Height.Set(40, 0);
+            leftArrow.OnClick += LeftArrow;
 
             rightArrow = new UITextPanel<string>(">", 1f, false);
             rightArrow.Width.Set(40, 0);
             rightArrow.Height.Set(40, 0);
+            rightArrow.OnClick += RightArrow;
 
             evilText = new UITextPanel<string>("");
             evilText.Width.Set(380, 0);
@@ -69,19 +74,28 @@ namespace BiomeLibrary.UIModification
             worldEvilPickText.HAlign = 0.5f;
             worldEvilPickText.VAlign = 0.6f;
             worldEvilPickText.Top.Set(-50f, 0);
-            
+
+
+            selectButton.OnClick += Select;
+            backButton.OnClick += Back;
+
+            mainPanelContent.Append(rightArrow);
+            mainPanelContent.Append(leftArrow);
+            mainPanelContent.Append(evilText);
+            Append(selectButton);
+            Append(backButton);
 
             Append(mainPanelContent);
-            Append(rightArrow);
-            Append(leftArrow);
-            Append(evilText);
-            Append(worldEvilPickText);
+            Append(worldEvilPickText);            
         }
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             evilText.SetText(evilName[listIndex]);
-            Vector2 textPanelBarOffset = mainPanelContent.GetInnerDimensions().Position() + new Vector2(5, 124 + 5);
+            Vector2 textPanelBarOffset = new Vector2(5, 124 + 5);
+            Vector2 mainPanelPosition = mainPanelContent.GetInnerDimensions().Position();
+            Vector2 mainPanelDimension = new Vector2(mainPanelContent.GetInnerDimensions().Width, mainPanelContent.GetInnerDimensions().Height);
 
             leftArrow.Left.Set(textPanelBarOffset.X, 0);
             leftArrow.Top.Set(textPanelBarOffset.Y, 0);
@@ -92,9 +106,43 @@ namespace BiomeLibrary.UIModification
             evilText.Left.Set(textPanelBarOffset.X + 40 + 2, 0);
             evilText.Top.Set(textPanelBarOffset.Y, 0);
 
-            mainPanelContent.Height.Set(190, 0);
             worldEvilPickText.Top.Set(-130f, 0);
-            Recalculate();
+
+            selectButton.Top.Set(mainPanelPosition.Y + mainPanelDimension.Y + selectButton.Height.Pixels + 3, 0);
+            selectButton.Left.Set(mainPanelPosition.X + mainPanelDimension.X - selectButton.Width.Pixels, 0);
+
+            backButton.Top.Set(mainPanelPosition.Y + mainPanelDimension.Y + backButton.Height.Pixels + 3, 0);
+            backButton.Left.Set(mainPanelPosition.X, 0);
+        }
+
+        public void LeftArrow(UIMouseEvent mouseEvent, UIElement targetElement)
+        {
+            listIndex--;
+            if (listIndex < 0)
+            {
+                listIndex = evilName.Count - 1;
+            }
+        }
+
+        public void RightArrow(UIMouseEvent mouseEvent, UIElement targetElement)
+        {
+            listIndex++;
+            if (listIndex >= evilName.Count)
+            {
+                listIndex = 0;
+            }
+        }
+
+        public void Select(UIMouseEvent mouseEvent, UIElement targetElement)
+        {
+            BiomeWorld.currentEvil = evilName[listIndex];
+            BiomeWorld.PendingEvil = evilName[listIndex];
+            Main.menuMode = 7;
+        }
+
+        public void Back(UIMouseEvent mouseEvent, UIElement targetElement)
+        {
+            Main.menuMode = -7;
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch)
@@ -135,6 +183,10 @@ namespace BiomeLibrary.UIModification
             else if (evilName[listIndex] == "Crimson")
             {
                 evilPreview = BiomeLibs.Instance.GetTexture("Texture/Evil/Crimson");
+            }
+            else if (evilName[listIndex] == "Random")
+            {
+                evilPreview = BiomeLibs.Instance.GetTexture("Texture/Random");
             }
 
             return evilPreview;
