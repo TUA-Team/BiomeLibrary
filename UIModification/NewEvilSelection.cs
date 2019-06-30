@@ -20,8 +20,8 @@ namespace BiomeLibrary.UIModification
         private UITextPanel<string> leftArrow = new UITextPanel<string>("<", 1f, false);
         private UITextPanel<string> rightArrow = new UITextPanel<string>(">", 1f, false);
         private UITextPanel<string> worldEvilPickText = new UITextPanel<string>("Pick world evil", 1f, true);
-        private UITextPanel<string> selectButton = new UITextPanel<string>("select");
-        private UITextPanel<string> backButton = new UITextPanel<string>("back");
+        private UITextPanel<string> selectButton = new UITextPanel<string>("Select");
+        private UITextPanel<string> backButton = new UITextPanel<string>("Back");
 
         private List<ModBiome> allEvil;
 
@@ -108,11 +108,13 @@ namespace BiomeLibrary.UIModification
 
             worldEvilPickText.Top.Set(-130f, 0);
 
-            selectButton.Top.Set(mainPanelPosition.Y + mainPanelDimension.Y + selectButton.Height.Pixels + 3, 0);
-            selectButton.Left.Set(mainPanelPosition.X + mainPanelDimension.X - selectButton.Width.Pixels, 0);
+            selectButton.Top.Set(mainPanelPosition.Y + mainPanelDimension.Y + 15, 0);
+            selectButton.Left.Set(mainPanelPosition.X + mainPanelDimension.X - selectButton.GetInnerDimensions().Width - 12, 0);
+            selectButton.SetText("Select");
 
-            backButton.Top.Set(mainPanelPosition.Y + mainPanelDimension.Y + backButton.Height.Pixels + 3, 0);
-            backButton.Left.Set(mainPanelPosition.X, 0);
+            backButton.Top.Set(mainPanelPosition.Y + mainPanelDimension.Y + 15, 0);
+            backButton.Left.Set(mainPanelPosition.X - 12, 0);
+            Recalculate();
         }
 
         public void LeftArrow(UIMouseEvent mouseEvent, UIElement targetElement)
