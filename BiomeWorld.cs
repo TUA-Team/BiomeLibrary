@@ -21,6 +21,7 @@ namespace BiomeLibrary
         public static readonly bool x64Terraria = IntPtr.Size == 8;
         public static string currentEvil = "Corruption";
         internal static string PendingEvil = "";
+        internal static GenPass vanillaEvilPass;
 
         public override void Load(TagCompound tag)
         {
@@ -67,6 +68,7 @@ namespace BiomeLibrary
             int evilIndex = tasks.FindIndex(i => i.Name == "Corruption");
             if (evilIndex != -1)
             {
+                vanillaEvilPass = tasks[evilIndex];
                 tasks[evilIndex] = new PassLegacy("Corruption", (progress) => GenerateEvil(progress, tasks[resetIndex] as PassLegacy));
             }
         }
