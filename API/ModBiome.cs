@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
@@ -25,10 +26,15 @@ namespace BiomeLibrary.API
         private int _minimumTileRequirement;
 
         private string _biomeName = "";
+        internal string _biomeInternalName = "";
 
         private BiomeAlternative _alt = BiomeAlternative.noAlt;
         private EvilSpecific _evilSpecific = EvilSpecific.both;
         private String _evilSpecificBoundName = "Corruption";
+
+        public Texture2D biomePreview => mod.TextureExists(this.GetType().FullName.Replace(".", "/"))
+            ? mod.GetTexture(this.GetType().FullName.Replace(".", "/"))
+            : BiomeLibs.Instance.GetTexture("Texture/Random");
 
         public Mod mod
         {

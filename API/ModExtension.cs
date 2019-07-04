@@ -27,6 +27,7 @@ namespace BiomeLibrary.API
             ModBiome biome = (ModBiome)Activator.CreateInstance(type);
             biome.mod = mod;
             biome.BiomeName = type.Name;
+            biome._biomeInternalName = mod.Name + ":" + type.Name;
             biome.SetDefault();
 
             BiomeLibs.Biomes.Add(mod.Name + ":" + type.Name, biome);

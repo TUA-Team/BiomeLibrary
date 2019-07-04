@@ -17,6 +17,8 @@ namespace BiomeLibrary
 		public static BiomeWorld World;
 		public static Mod Instance;
 
+	    public static int previousMenuMode = 0; 
+
 		private readonly NewEvilSelection newEvilSelection = new NewEvilSelection();
 
 
@@ -36,48 +38,58 @@ namespace BiomeLibrary
 			
 		}
 
-		public override void Unload()
-		{
-			Biomes.Clear();
-			Biomes = null;
-		}
+		
 
 		public override void Load()
 		{
 			Biomes = new Dictionary<string, ModBiome>();
 			Instance = this;
+		    Main.OnTick += UpdateTick;
 		}
 
-		public override void PostSetupContent()
-		{
-			LoadModContent(Autoload);
-		}
+	    public override void Unload()
+	    {
+	        Biomes.Clear();
+	        Biomes = null;
+	        Instance = null;
+	        Main.OnTick -= UpdateTick;
+	    }
 
-		internal void Autoload(Mod mod)
-		{
+        public override void PostSetupContent()
+	    {
+	        LoadModContent(Autoload);
+	    }
 
-			if (mod.Code == null)
-				return;
+        internal void UpdateTick()
+	    {
+	        if (previousMenuMode != Main.menuMode)
+	        {
+	            LogManager.GetLogger("Menu mode").Info(Main.menuMode);
+	        }
 
-			foreach (Type type in mod.Code.GetTypes().OrderBy(type => type.FullName, StringComparer.InvariantCulture))
-			{
-				if (type.IsSubclassOf(typeof(ModBiome)))
-				{					
-					mod.AutoloadBiome(type);
-				}
-			}
-		}
+	        previousMenuMode = Main.menuMode;
+	        if (Main.menuMode == -71)
+	        {
+	            SetMenuUIState(newEvilSelection);
+	        }
+        }
 
-		public override void UpdateMusic(ref int music, ref MusicPriority priority)
-		{
-			if (Main.menuMode == -71)
-			{
-				SetMenuUIState(newEvilSelection);
-			}
-            LogManager.GetLogger("MenuID").Info(Main.menuMode);
-		}
+	    internal void Autoload(Mod mod)
+	    {
 
-	    internal static void SetMenuUIState(UIState state)
+	        if (mod.Code == null)
+	            return;
+
+	        foreach (Type type in mod.Code.GetTypes().OrderBy(type => type.FullName, StringComparer.InvariantCulture))
+	        {
+	            if (type.IsSubclassOf(typeof(ModBiome)))
+	            {
+	                mod.AutoloadBiome(type);
+	            }
+	        }
+	    }
+
+        internal static void SetMenuUIState(UIState state)
 	    {
 	        Main.menuMode = 888;
             Main.MenuUI.SetState(state);

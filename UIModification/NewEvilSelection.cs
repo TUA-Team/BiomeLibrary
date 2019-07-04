@@ -25,7 +25,7 @@ namespace BiomeLibrary.UIModification
 
         private List<ModBiome> allEvil;
 
-        private List<String> evilName;
+        private List<Tuple<string, string>> evilName;
 
         private int listIndex = 0;
 
@@ -35,14 +35,14 @@ namespace BiomeLibrary.UIModification
         {
             allEvil = BiomeLibs.Biomes.Values.Where(i => i.BiomeAlt == BiomeAlternative.evilAlt).ToList();
 
-            evilName = new List<string>();
-            evilName.Add("Corruption");
-            evilName.Add("Crimson");
+            evilName = new List<Tuple<string,string>>();
+            evilName.Add(new Tuple<string, string>("Vanilla:Corruption","Corruption"));
+            evilName.Add(new Tuple<string, string>("Vanilla:Crimson", "Crimson"));
             foreach (ModBiome biome in allEvil)
             {
-                evilName.Add(biome.BiomeName);
+                evilName.Add(new Tuple<string, string>(biome._biomeInternalName, biome.BiomeName));
             }
-            evilName.Add("Random");
+            evilName.Add(new Tuple<string, string>("BiomeLibs:Random", "Random"));
 
             this.Width.Set(Main.screenWidth, 0);
             this.Height.Set(Main.screenHeight, 0);
@@ -92,7 +92,7 @@ namespace BiomeLibrary.UIModification
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            evilText.SetText(evilName[listIndex]);
+            evilText.SetText(evilName[listIndex].Item2);
             Vector2 textPanelBarOffset = new Vector2(5, 124 + 5);
             Vector2 mainPanelPosition = mainPanelContent.GetInnerDimensions().Position();
             Vector2 mainPanelDimension = new Vector2(mainPanelContent.GetInnerDimensions().Width, mainPanelContent.GetInnerDimensions().Height);
@@ -110,7 +110,6 @@ namespace BiomeLibrary.UIModification
 
             selectButton.Top.Set(mainPanelPosition.Y + mainPanelDimension.Y + 15, 0);
             selectButton.Left.Set(mainPanelPosition.X + mainPanelDimension.X - selectButton.GetInnerDimensions().Width - 12, 0);
-            selectButton.SetText("Select");
 
             backButton.Top.Set(mainPanelPosition.Y + mainPanelDimension.Y + 15, 0);
             backButton.Left.Set(mainPanelPosition.X - 12, 0);
@@ -137,8 +136,8 @@ namespace BiomeLibrary.UIModification
 
         public void Select(UIMouseEvent mouseEvent, UIElement targetElement)
         {
-            BiomeWorld.currentEvil = evilName[listIndex];
-            BiomeWorld.PendingEvil = evilName[listIndex];
+            BiomeWorld.currentEvil = evilName[listIndex].Item2;
+            BiomeWorld.PendingEvil = evilName[listIndex].Item2;
             Main.menuMode = 7;
         }
 
@@ -177,21 +176,17 @@ namespace BiomeLibrary.UIModification
 
         private Texture2D EvilPreview()
         {
-            Texture2D evilPreview = null;
-            if (evilName[listIndex] == "Corruption")
+            switch (evilName[listIndex].Item2)
             {
-                evilPreview = BiomeLibs.Instance.GetTexture("Texture/Evil/Corruption");
+                case "Corruption":
+                    return BiomeLibs.Instance.GetTexture("Texture/Evil/Corruption");
+                case "Crimson":
+                    return BiomeLibs.Instance.GetTexture("Texture/Evil/Crimson");
+                case "Random":
+                    return BiomeLibs.Instance.GetTexture("Texture/Random");
+                default:
+                    return BiomeLibs.Biomes[evilName[listIndex].Item1].biomePreview;
             }
-            else if (evilName[listIndex] == "Crimson")
-            {
-                evilPreview = BiomeLibs.Instance.GetTexture("Texture/Evil/Crimson");
-            }
-            else if (evilName[listIndex] == "Random")
-            {
-                evilPreview = BiomeLibs.Instance.GetTexture("Texture/Random");
-            }
-
-            return evilPreview;
         }
     }
 }

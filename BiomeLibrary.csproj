@@ -78,6 +78,7 @@
     <Compile Include="IntegratedBiome\Hell.cs" />
     <Compile Include="NPCs\BiomeGlobalNPC.cs" />
     <Compile Include="NPCs\BiomeNPCInfo.cs" />
+    <Compile Include="Test\TestEvil.cs" />
     <Compile Include="UIModification\EvilSelection.cs" />
     <Compile Include="UIModification\NewEvilSelection.cs" />
     <Compile Include="UIModification\UIMenuButton.cs" />
@@ -102,8 +103,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Xact\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Xact.dll</HintPath>
     </Reference>
-    <Reference Include="ReLogic">
-      <HintPath>..\..\references\ReLogic.dll</HintPath>
+    <Reference Include="ReLogicWindows, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Terraria\ReLogicWindows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="Terraria">
