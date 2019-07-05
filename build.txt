@@ -1,6 +1,6 @@
-author = TUA mod team
+displayName = BiomeLibs - The ModBiome Update
+author = TUA Mod Team
 version = 0.4
-displayName = BiomeLibs - The ModBiome update
 homepage = https://forums.terraria.org/index.php?threads/biomelibs-a-mod-to-easily-create-biome-and-hallow-alt.65009/
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
 includePDB = true

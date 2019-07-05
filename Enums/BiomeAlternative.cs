@@ -1,13 +1,26 @@
 ﻿namespace BiomeLibrary.Enums
 {
-    public enum BiomeAlternative : byte
+    public enum BiomeAlternative
     {
-        noAlt = 0, //Biome is not an Alt
-        jungleAlt = 1, //Biome is a jungle alt
-        snowAlt = 2, //Biome is a snow alt
-        bigDesertAlt = 3, //Biome is a big desert alt
-        hellAlt = 4, //Biome is a hell alt
-        hallowAlt = 5, //Biome is a hallow alt
-        evilAlt = 6 //Biome is an evil alt
+        /// <summary>Biome isn't an alternative to any other biome.</summary>
+        None,
+
+        /// <summary>Biome is an alternative to the Jungle biome.</summary>
+        Jungle,
+
+        /// <summary>Biome is an alternative to the Snow biome.</summary>
+        Snow,
+
+        /// <summary>Biome is an alternative to the Big Desert biome.</summary>
+        BigDesert,
+
+        /// <summary>Biome is an alternative to the Underworld biome.</summary>
+        Underworld,
+
+        /// <summary>Biome is an alternative to the Halow biome.</summary>
+        Hallow,
+
+        /// <summary>Biome is an alternative to the Evil biome.</summary>
+        Evil
     }
 }

@@ -1,25 +1,26 @@
-﻿using BiomeLibrary.API;
-using BiomeLibrary.Enums;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BiomeLibrary.Enums;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
 
-namespace BiomeLibrary
+namespace BiomeLibrary.Worlds
 {
-    public partial class BiomeWorld : ModWorld
+    public sealed partial class BiomeLibraryWorld : ModWorld
     {
-        public void GenerateGoodBiome(GenerationProgress progress)
+        public void GenerateGoodHardmodeBiome(GenerationProgress progress)
         {
             float num = (float)WorldGen.genRand.Next(300, 400) * 0.001f;
             float num2 = (float)WorldGen.genRand.Next(200, 300) * 0.001f;
+
             int num3 = (int)((float)Main.maxTilesX * num);
             int num5 = 1;
+
             if (WorldGen.genRand.Next(2) == 0)
             {
                 num5 = -1;
@@ -42,62 +43,61 @@ namespace BiomeLibrary
             DetermineHallowAlt(num3, num5);
         }
 
-        public void GenerateBadBiome(GenerationProgress progress)
+        public void GenerateBadHardmodeBiome(GenerationProgress progress)
         {
             float num = (float)WorldGen.genRand.Next(300, 400) * 0.001f;
             float num2 = (float)WorldGen.genRand.Next(200, 300) * 0.001f;
+
             int num4 = (int)((float)Main.maxTilesX * (1f - num));
             int num5 = 1;
+
             if (WorldGen.genRand.Next(2) == 0)
             {
                 num4 = (int)((float)Main.maxTilesX * num);
                 num5 = -1;
             }
-            int num6 = 1;
-            if (WorldGen.dungeonX < Main.maxTilesX / 2)
-            {
-                num6 = -1;
-            }
-            if (num6 < 0)
-            {
 
+            int num6 = 1;
+
+            if (WorldGen.dungeonX < Main.maxTilesX / 2)
+                num6 = -1;
+
+            if (num6 < 0)
                 num4 = (int)((float)Main.maxTilesX * num2);
 
-            }
-
-            GenerateEvilAlt(num4, num5, BiomeLibs.Biomes.Values.ToList());
+            GenerateEvilAlt(num4, num5, BiomeLoader.loadedBiomes.Values.ToList());
         }
 
         private void DetermineHallowAlt(int num3, int num5)
         {
-            EvilSpecific currentEvil = (Main.ActiveWorldFileData.HasCorruption)
-                ? EvilSpecific.Corruption
-                : EvilSpecific.Crimson;
+            VanillaBiome currentEvil = Main.ActiveWorldFileData.HasCorruption ? VanillaBiome.Corruption : VanillaBiome.Crimson;
 
-            List<ModBiome> allAltToGen = BiomeLibs.Biomes.Values.Where(both =>
-                both.BiomeAlt == BiomeAlternative.hallowAlt && both.EvilSpecific == EvilSpecific.Both).ToList();
+            List<ModBiome> allAltToGen = BiomeLoader.loadedBiomes.Values.Where(biome =>
+                biome.BiomeAlternative == BiomeAlternative.Hallow && 
+                biome.BiomeSpecific == VanillaBiome.BothEvilBiomes.ToString()).ToList();
 
-            if (!BiomeLibs.Biomes.Values.Any(c =>
-                    c.EvilSpecific == EvilSpecific.Crimson || c.BiomeAlt == BiomeAlternative.hallowAlt)
-                && currentEvil == EvilSpecific.Crimson)
+            if (!BiomeLoader.loadedBiomes.Values.Any(biome =>
+                    biome.BiomeSpecific == VanillaBiome.Crimson.ToString() || biome.BiomeAlternative == BiomeAlternative.Hallow)
+                && currentEvil == VanillaBiome.Crimson)
             {
                 Main.NewText("The fantasy creature has arrived!", Color.LightCyan);
                 WorldGen.GERunner(num3, 0, 3f * (float)3 * num5, 5f, true);
                 return;
             }
+
             ExtractAllSpecificAlt(currentEvil, allAltToGen);
             GenerateHallowAlt(num3, num5, currentEvil, allAltToGen);
+
             MethodInfo draw = typeof(Main).GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
             Object[] obj = { Main._drawInterfaceGameTime };
             draw.Invoke(Main.instance, obj);
         }
 
-        private void GenerateHallowAlt(int num3, int num5, EvilSpecific currentEvil, List<ModBiome> allAltToGen)
+        private void GenerateHallowAlt(int num3, int num5, VanillaBiome currentEvil, List<ModBiome> allAltToGen)
         {
             ModBiome biome;
-            int rng = (currentEvil == EvilSpecific.Corruption)
-                ? WorldGen.genRand.Next(allAltToGen.Count)
-                : WorldGen.genRand.Next(allAltToGen.Count - 1);
+
+            int rng = (currentEvil == VanillaBiome.Corruption ? WorldGen.genRand.Next(allAltToGen.Count) : WorldGen.genRand.Next(allAltToGen.Count - 1));
 
             if (rng == allAltToGen.Count)
             {
@@ -108,42 +108,45 @@ namespace BiomeLibrary
             biome = allAltToGen[rng];
 
 
-            String message = "";
-            if (!biome.BiomeAltGeneration(ref message))
+            string message = "";
+            if (!biome.BiomeAlternativeGeneration(ref message))
             {
                 Main.NewText(message);
-                BWRunner(num3, 0, blockFinder(biome.biomeBlock), (float)(3 * num5), 5f);
+                BWRunner(num3, 0, blockFinder(biome.biomeBlocks), (float)(3 * num5), 5f);
             }
         }
 
         private void GenerateEvilAlt(int num4, int num5, List<ModBiome> allBiome)
         {
-            if (BiomeWorld.currentEvil == "Corruption" || BiomeWorld.currentEvil == "Crimson")
+            if (CurrentEvil == VanillaBiome.Corruption.ToString() || CurrentEvil == VanillaBiome.Crimson.ToString())
             {
                 WorldGen.GERunner(num4, 0, (float)(3 * -(float)num5), 5f, false);
                 return;
             }
-            ModBiome biome = allBiome.Single(i => i.BiomeName == BiomeWorld.currentEvil);
+
+            ModBiome biome = allBiome.Single(i => i.BiomeName == CurrentEvil);
         }
 
-        private static void ExtractAllSpecificAlt(EvilSpecific currentEvil, List<ModBiome> allAltToGen)
+        private static void ExtractAllSpecificAlt(VanillaBiome currentEvil, List<ModBiome> allAltToGen)
         {
             switch (currentEvil)
             {
-                case EvilSpecific.Corruption:
-                    allAltToGen.AddRange(BiomeLibs.Biomes.Values.Where(corruption =>
-                        corruption.EvilSpecific == EvilSpecific.Corruption &&
-                        corruption.BiomeAlt == BiomeAlternative.hallowAlt).ToList());
+                case VanillaBiome.Corruption:
+                    allAltToGen.AddRange(BiomeLoader.loadedBiomes.Values.Where(biome =>
+                        biome.BiomeSpecific == VanillaBiome.Corruption.ToString() &&
+                        biome.BiomeAlternative == BiomeAlternative.Hallow).ToList());
                     break;
-                case EvilSpecific.Crimson:
-                    allAltToGen.AddRange(BiomeLibs.Biomes.Values.Where(corruption =>
-                        corruption.EvilSpecific == EvilSpecific.Crimson &&
-                        corruption.BiomeAlt == BiomeAlternative.hallowAlt).ToList());
+
+                case VanillaBiome.Crimson:
+                    allAltToGen.AddRange(BiomeLoader.loadedBiomes.Values.Where(biome =>
+                        biome.BiomeSpecific == VanillaBiome.Crimson.ToString() &&
+                        biome.BiomeAlternative == BiomeAlternative.Hallow).ToList());
                     break;
-                case EvilSpecific.Other:
-                    allAltToGen.AddRange(BiomeLibs.Biomes.Values.Where(corruption =>
-                        corruption.EvilSpecific == EvilSpecific.Other &&
-                        corruption.BiomeAlt == BiomeAlternative.hallowAlt && corruption.EvilSpecificBoundName == BiomeWorld.currentEvil).ToList());
+
+                case VanillaBiome.Modded:
+                    allAltToGen.AddRange(BiomeLoader.loadedBiomes.Values.Where(biome =>
+                        biome.BiomeSpecific == VanillaBiome.Modded.ToString() &&
+                        biome.BiomeAlternative == BiomeAlternative.Hallow && biome.BiomeSpecific == CurrentEvil).ToList());
                     break;
             }
         }
@@ -152,13 +155,15 @@ namespace BiomeLibrary
         private int[] blockFinder(IList<int> biomeBlockList)
         {
             int[] blockList = { TileID.Grass, TileID.Dirt, TileID.Stone, TileID.Sand, TileID.Sandstone, TileID.HardenedSand, TileID.IceBlock };
-            blockList[0] = ModExtension.FindTileIDInArray("Grass", biomeBlockList);
-            blockList[1] = ModExtension.FindTileIDInArray("Dirt", biomeBlockList);
-            blockList[2] = ModExtension.FindTileIDInArray("Stone", "Sand", biomeBlockList);
-            blockList[3] = ModExtension.FindTileIDInArray("Sand", "Hardened", biomeBlockList);
-            blockList[4] = ModExtension.FindTileIDInArray("Sandstone", biomeBlockList);
-            blockList[5] = ModExtension.FindTileIDInArray("HardenedSand", biomeBlockList);
-            blockList[6] = ModExtension.FindTileIDInArray("Ice", biomeBlockList);
+
+            blockList[0] = Utilities.FindModdedTileIDInArray(biomeBlockList, "Grass");
+            blockList[1] = Utilities.FindModdedTileIDInArray(biomeBlockList, "Dirt");
+            blockList[2] = Utilities.FindModdedTileIDInArray(biomeBlockList, "Stone", "Sand");
+            blockList[3] = Utilities.FindModdedTileIDInArray(biomeBlockList, "Sand", "Hardened");
+            blockList[4] = Utilities.FindModdedTileIDInArray(biomeBlockList, "Sandstone");
+            blockList[5] = Utilities.FindModdedTileIDInArray(biomeBlockList, "HardenedSand");
+            blockList[6] = Utilities.FindModdedTileIDInArray(biomeBlockList, "Ice");
+
             return blockList;
         }
 
@@ -206,7 +211,7 @@ namespace BiomeLibrary
                 {
                     for (int l = num6; l < num7; l++)
                     {
-                        if ((double)(System.Math.Abs((float)k - value.X) + System.Math.Abs((float)l - value.Y)) < (double)num * 0.5 * (1.0 + (double)WorldGen.genRand.Next(-10, 11) * 0.015))
+                        if ((double)(Math.Abs((float)k - value.X) + Math.Abs((float)l - value.Y)) < (double)num * 0.5 * (1.0 + (double)WorldGen.genRand.Next(-10, 11) * 0.015))
                         {
                             /*if (Main.tile[k, l].wall == 63 || Main.tile[k, l].wall == 65 || Main.tile[k, l].wall == 66 || Main.tile[k, l].wall == 68 || Main.tile[k, l].wall == 69 || Main.tile[k, l].wall == 81)
                             {
