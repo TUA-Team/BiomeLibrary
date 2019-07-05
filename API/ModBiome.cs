@@ -1,11 +1,6 @@
 ﻿using BiomeLibrary.Enums;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.Generation;
@@ -16,21 +11,15 @@ namespace BiomeLibrary.API
 {
     public class ModBiome
     {
-
         private readonly int _runtimeID;
 
         public readonly IList<int> biomeBlock = new List<int>(); //List of block ID, this list cannot overriden
         public readonly IList<int> npcList = new List<int>();
 
         private int _tileCount;
-        private int _minimumTileRequirement;
 
         private string _biomeName = "";
         internal string _biomeInternalName = "";
-
-        private BiomeAlternative _alt = BiomeAlternative.noAlt;
-        private EvilSpecific _evilSpecific = EvilSpecific.both;
-        private String _evilSpecificBoundName = "Corruption";
 
         public Texture2D biomePreview => mod.TextureExists(this.GetType().FullName.Replace(".", "/"))
             ? mod.GetTexture(this.GetType().FullName.Replace(".", "/"))
@@ -42,35 +31,16 @@ namespace BiomeLibrary.API
             internal set;
         }
 
-        public int MinimumTileRequirement
-        {
-            get => _minimumTileRequirement;
-            set => _minimumTileRequirement = value;
-        }
+        public int MinimumTileRequirement { get; set; }
 
-        public BiomeAlternative BiomeAlt
-        {
-            get => _alt;
-            set => _alt = value;
-        }
+        public BiomeAlternative BiomeAlt { get; set; } = BiomeAlternative.noAlt;
 
-        public EvilSpecific EvilSpecific
-        {
-            get => _evilSpecific;
-            set => _evilSpecific = value;
-        }
+        public EvilSpecific EvilSpecific { get; set; } = EvilSpecific.Both;
 
-        public String EvilSpecificBoundName
-        {
-            get => _evilSpecificBoundName;
-            protected set => _evilSpecificBoundName = value;
-        }
+        public string EvilSpecificBoundName { get; protected set; } = "Corruption";
 
-        public String BiomeName //Set biome name
-        {
-            get;
-            set;
-        }
+        /// <summary>The name for the biome.</summary>
+        public string BiomeName { get; set; }
 
         internal bool Valid => !WorldGen.gen && _tileCount >= MinimumTileRequirement && Condition();
 

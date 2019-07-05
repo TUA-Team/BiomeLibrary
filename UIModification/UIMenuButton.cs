@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
-using Terraria.World.Generation;
 
 namespace BiomeLibrary.UIModification
 {
-    class UIMenuButton : UIElement
+    public class UIMenuButton : UIElement
     {
         private readonly string buttonName;
         private readonly UITextPanel<LocalizedText> textPanel;
@@ -25,8 +18,6 @@ namespace BiomeLibrary.UIModification
         private bool list = false;
         private int listIndex = 0;
         private bool tickSound = false;
-
-        public string ButtomName => buttonName;
 
         public UIMenuButton(string text, int xPosition, int yPosition)
         {
@@ -90,6 +81,7 @@ namespace BiomeLibrary.UIModification
         {
             base.Draw(spriteBatch);
             CalculatedStyle style = GetOuterDimensions();
+
             if (IsMouseHovering)
             {
                 Utils.DrawBorderStringFourWay(spriteBatch, Main.fontDeathText, buttonName, style.X,
@@ -111,5 +103,7 @@ namespace BiomeLibrary.UIModification
             spriteBatch.Draw(bound2, new Rectangle(rec2.X + rec2.Width - 1, rec2.Y, 1, rec2.Height), Color.Green);
             spriteBatch.Draw(bound2, new Rectangle(rec2.X, rec2.Y + rec2.Height - 1, rec2.Width, 1), Color.Green);*/
         }
+
+        public string ButtonName => buttonName;
     }
 }

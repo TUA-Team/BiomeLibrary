@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -73,15 +71,15 @@ namespace BiomeLibrary
         private void DetermineHallowAlt(int num3, int num5)
         {
             EvilSpecific currentEvil = (Main.ActiveWorldFileData.HasCorruption)
-                ? EvilSpecific.corruption
-                : EvilSpecific.crimson;
+                ? EvilSpecific.Corruption
+                : EvilSpecific.Crimson;
 
             List<ModBiome> allAltToGen = BiomeLibs.Biomes.Values.Where(both =>
-                both.BiomeAlt == BiomeAlternative.hallowAlt && both.EvilSpecific == EvilSpecific.both).ToList();
+                both.BiomeAlt == BiomeAlternative.hallowAlt && both.EvilSpecific == EvilSpecific.Both).ToList();
 
             if (!BiomeLibs.Biomes.Values.Any(c =>
-                    c.EvilSpecific == EvilSpecific.crimson || c.BiomeAlt == BiomeAlternative.hallowAlt)
-                && currentEvil == EvilSpecific.crimson)
+                    c.EvilSpecific == EvilSpecific.Crimson || c.BiomeAlt == BiomeAlternative.hallowAlt)
+                && currentEvil == EvilSpecific.Crimson)
             {
                 Main.NewText("The fantasy creature has arrived!", Color.LightCyan);
                 WorldGen.GERunner(num3, 0, 3f * (float)3 * num5, 5f, true);
@@ -97,7 +95,7 @@ namespace BiomeLibrary
         private void GenerateHallowAlt(int num3, int num5, EvilSpecific currentEvil, List<ModBiome> allAltToGen)
         {
             ModBiome biome;
-            int rng = (currentEvil == EvilSpecific.corruption)
+            int rng = (currentEvil == EvilSpecific.Corruption)
                 ? WorldGen.genRand.Next(allAltToGen.Count)
                 : WorldGen.genRand.Next(allAltToGen.Count - 1);
 
@@ -132,19 +130,19 @@ namespace BiomeLibrary
         {
             switch (currentEvil)
             {
-                case EvilSpecific.corruption:
+                case EvilSpecific.Corruption:
                     allAltToGen.AddRange(BiomeLibs.Biomes.Values.Where(corruption =>
-                        corruption.EvilSpecific == EvilSpecific.corruption &&
+                        corruption.EvilSpecific == EvilSpecific.Corruption &&
                         corruption.BiomeAlt == BiomeAlternative.hallowAlt).ToList());
                     break;
-                case EvilSpecific.crimson:
+                case EvilSpecific.Crimson:
                     allAltToGen.AddRange(BiomeLibs.Biomes.Values.Where(corruption =>
-                        corruption.EvilSpecific == EvilSpecific.crimson &&
+                        corruption.EvilSpecific == EvilSpecific.Crimson &&
                         corruption.BiomeAlt == BiomeAlternative.hallowAlt).ToList());
                     break;
-                case EvilSpecific.other:
+                case EvilSpecific.Other:
                     allAltToGen.AddRange(BiomeLibs.Biomes.Values.Where(corruption =>
-                        corruption.EvilSpecific == EvilSpecific.other &&
+                        corruption.EvilSpecific == EvilSpecific.Other &&
                         corruption.BiomeAlt == BiomeAlternative.hallowAlt && corruption.EvilSpecificBoundName == BiomeWorld.currentEvil).ToList());
                     break;
             }

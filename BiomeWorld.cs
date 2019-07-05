@@ -1,13 +1,8 @@
-﻿using BiomeLibrary.API;
-using BiomeLibrary.Enums;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Terraria;
 using Terraria.GameContent.Generation;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
@@ -16,12 +11,14 @@ namespace BiomeLibrary
 {
     public partial class BiomeWorld : ModWorld
     {
+        internal static string pendingEvil = "";
+        internal static GenPass vanillaEvilPass;
+
         public static bool infinite = false;
         public static bool chunked = false;
+
         public static readonly bool x64Terraria = IntPtr.Size == 8;
         public static string currentEvil = "Corruption";
-        internal static string PendingEvil = "";
-        internal static GenPass vanillaEvilPass;
 
         public override void Load(TagCompound tag)
         {

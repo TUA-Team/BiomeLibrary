@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BiomeLibrary.API;
 using BiomeLibrary.Enums;
 using Microsoft.Xna.Framework;
@@ -137,7 +135,7 @@ namespace BiomeLibrary.UIModification
         public void Select(UIMouseEvent mouseEvent, UIElement targetElement)
         {
             BiomeWorld.currentEvil = evilName[listIndex].Item2;
-            BiomeWorld.PendingEvil = evilName[listIndex].Item2;
+            BiomeWorld.pendingEvil = evilName[listIndex].Item2;
             Main.menuMode = 7;
         }
 

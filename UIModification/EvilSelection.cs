@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using BiomeLibrary.API;
 using BiomeLibrary.Enums;
 using Microsoft.Xna.Framework;
@@ -14,41 +12,39 @@ using Terraria.UI;
 
 namespace BiomeLibrary.UIModification
 {
-    [Obsolete("Remaking this entirely")]
-    class EvilSelection : UIState
+    public class EvilSelection : UIState
     {
-        private UIList allEvilAvailable;
-        private UIScrollbar scrollbar;
-        private int prevScreenWidth, prevScreenHeight;
+        private UIList _allEvilAvailable;
+        private UIScrollbar _scrollbar;
+        private int _prevScreenWidth, _prevScreenHeight;
 
         public override void OnInitialize()
         {
-            allEvilAvailable = new UIList();
+            _allEvilAvailable = new UIList();
             List<ModBiome> allEvil = BiomeLibs.Biomes.Values.Where(i => i.BiomeAlt == BiomeAlternative.evilAlt).ToList();
 
-            scrollbar = new UIScrollbar();
-            scrollbar.Top.Set(-5, 0f);
-            scrollbar.HAlign = 1f;
+            _scrollbar = new UIScrollbar();
+            _scrollbar.Top.Set(-5, 0f);
+            _scrollbar.HAlign = 1f;
 
             Add(GenerateButton("Corruption"));
             Add(GenerateButton("Crimson"));
-            foreach (var biome in allEvil)
-            {
+
+            foreach (ModBiome biome in allEvil)
                 Add(GenerateButton(biome));
-            }
-            
+
             Add(GenerateButton("Random"));
-            allEvilAvailable.Width.Set(800, 0f);
-            allEvilAvailable.Height.Set(400, 0f);
-            allEvilAvailable.Left.Set(Main.screenWidth / 2 - 400, 0f);
-            allEvilAvailable.Top.Set(Main.screenHeight / 2 - 200, 0f);
-            allEvilAvailable.SetScrollbar(scrollbar);
+            _allEvilAvailable.Width.Set(800, 0f);
+            _allEvilAvailable.Height.Set(400, 0f);
+            _allEvilAvailable.Left.Set(Main.screenWidth / 2 - 400, 0f);
+            _allEvilAvailable.Top.Set(Main.screenHeight / 2 - 200, 0f);
+            _allEvilAvailable.SetScrollbar(_scrollbar);
             Width.Set(Main.screenWidth, 0f);
             Height.Set(Main.screenHeight, 0f);
             Left.Set(0, 0f);
             Top.Set(0, 0f);
-            Append(allEvilAvailable);
-            Append(scrollbar);
+            Append(_allEvilAvailable);
+            Append(_scrollbar);
         }
 
         public UIMenuButton GenerateButton(ModBiome biome)
@@ -58,7 +54,7 @@ namespace BiomeLibrary.UIModification
             button.OnClick += (evt, element) =>
             {
                 BiomeWorld.currentEvil = biome.BiomeName;
-                BiomeWorld.PendingEvil = biome.BiomeName;
+                BiomeWorld.pendingEvil = biome.BiomeName;
                 Main.menuMode = 7;
             };
             return button;
@@ -71,7 +67,7 @@ namespace BiomeLibrary.UIModification
             button.OnClick += (evt, element) =>
             {
                 BiomeWorld.currentEvil = biomeName;
-                BiomeWorld.PendingEvil = biomeName;
+                BiomeWorld.pendingEvil = biomeName;
                 Main.menuMode = 7;
             };
             return button;
@@ -80,27 +76,27 @@ namespace BiomeLibrary.UIModification
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (Main.screenWidth != prevScreenWidth || Main.screenHeight != prevScreenHeight)
+            if (Main.screenWidth != _prevScreenWidth || Main.screenHeight != _prevScreenHeight)
             {
-                allEvilAvailable.Left.Set(Main.screenWidth / 2 - 400, 0f);
-                allEvilAvailable.Top.Set(Main.screenHeight / 2 - 200, 0f);
+                _allEvilAvailable.Left.Set(Main.screenWidth / 2 - 400, 0f);
+                _allEvilAvailable.Top.Set(Main.screenHeight / 2 - 200, 0f);
                 Width.Set(Main.screenWidth, 0f);
                 Height.Set(Main.screenHeight, 0f);
                 Recalculate();
             }
 
-            prevScreenWidth = Main.screenWidth;
-            prevScreenHeight = Main.screenHeight;
+            _prevScreenWidth = Main.screenWidth;
+            _prevScreenHeight = Main.screenHeight;
         }
 
         public void Add(UIElement item)
         {
-            allEvilAvailable._items.Add(item);
+            _allEvilAvailable._items.Add(item);
             UIElement _innerList = (UIElement) typeof(UIList).GetField("_innerList", BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(allEvilAvailable);
+                .GetValue(_allEvilAvailable);
             _innerList.Append(item);
             _innerList.Recalculate();
-            typeof(UIList).GetField("_innerList", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(allEvilAvailable, _innerList);
+            typeof(UIList).GetField("_innerList", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(_allEvilAvailable, _innerList);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -117,7 +113,7 @@ namespace BiomeLibrary.UIModification
         {
             foreach (UIElement element in this.Elements)
             {
-                if (element is UIScrollbar && allEvilAvailable.Count <= 7)
+                if (element is UIScrollbar && _allEvilAvailable.Count <= 7)
                 {
                     continue;
                 }

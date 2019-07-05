@@ -3,9 +3,6 @@ using BiomeLibrary.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
@@ -17,34 +14,34 @@ namespace BiomeLibrary
     {
         public void DecideEvil(GenerationProgress progress)
         {
-            if (BiomeWorld.PendingEvil == "Random")
+            if (BiomeWorld.pendingEvil.Equals("Random", StringComparison.InvariantCultureIgnoreCase))
             {
                 List<ModBiome> allEvil = BiomeLibs.Biomes.Values.Where(i => i.BiomeAlt == BiomeAlternative.evilAlt).ToList();
-                List<String> evilName = new List<string>();
-                evilName.Add("Corruption");
-                evilName.Add("Crimson");
-                foreach (ModBiome biome in allEvil)
+                List<string> evilName = new List<string>()
                 {
+                    "Corruption",
+                    "Crimson"
+                };
+
+                foreach (ModBiome biome in allEvil)
                     evilName.Add(biome.BiomeName);
-                }
-                BiomeWorld.PendingEvil = evilName[WorldGen.genRand.Next(evilName.Count)];               
+
+                BiomeWorld.pendingEvil = evilName[WorldGen.genRand.Next(evilName.Count)];               
             }
-            if (BiomeWorld.PendingEvil == "Crimson")
+
+            if (BiomeWorld.pendingEvil.Equals("Crimson", StringComparison.InvariantCultureIgnoreCase))
                 WorldGen.crimson = true;
         }
 
         public void GenerateEvil(GenerationProgress progress, PassLegacy pass)
         {
-            if (BiomeWorld.PendingEvil == "Corruption" || BiomeWorld.PendingEvil == "Crimson")
-                GenerateVanillaEvil(progress, pass);
+            if (BiomeWorld.pendingEvil.Equals("Corruption", StringComparison.InvariantCultureIgnoreCase) || BiomeWorld.pendingEvil.Equals("Crimson", StringComparison.InvariantCultureIgnoreCase))
+                GenerateVanillaEvil(progress);
             else
-                BiomeLibs.Biomes.Values.Single(i => i.BiomeName == BiomeWorld.PendingEvil)
+                BiomeLibs.Biomes.Values.Single(i => i.BiomeName == BiomeWorld.pendingEvil)
                     .BiomeAltWorldGeneration(progress, pass);
         }
 
-        public void GenerateVanillaEvil(GenerationProgress progress, PassLegacy evilPass)
-        {
-            vanillaEvilPass.Apply(progress);
-        }
+        public void GenerateVanillaEvil(GenerationProgress progress) => vanillaEvilPass.Apply(progress);
     }
 }
